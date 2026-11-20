@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content="免费在线小工具：字数统计、双语闪卡、简历整理、番茄钟、文本处理、密码生成。无需注册，打开就能用。Free online tools by Kevin Lu." />
+<link rel="icon" href="data:," />
+<title>Free Tools · 免费小工具 — kevinlu.dpdns.org</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf8; --surface2:#ece7db; --ink:#1a231f; --muted:#5c665f; --line:#ddd6c6;
+  --teal:#0f766e; --teal-dark:#115e59; --amber:#d97706; --amber-bg:#fef3c7; --red:#b91c1c;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121613; --surface:#1c221e; --surface2:#262e28; --ink:#eef2ec; --muted:#a8b3a9; --line:#333d35; --teal:#2dd4bf; --teal-dark:#5eead4; --amber:#fbbf24; --amber-bg:#3a2f10; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans SC",system-ui,-apple-system,sans-serif;line-height:1.6}
+a{color:var(--teal)}
+button,input,textarea,select{font:inherit}
+button,[role="button"],select,summary,input:not([type="checkbox"]){min-height:44px}
+.mono{font-family:"JetBrains Mono",monospace}
+
+/* header */
+.topbar{border-bottom:3px solid var(--ink);background:var(--surface)}
+.topbar-in{max-width:1120px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font-weight:900;font-size:15px;letter-spacing:.02em}
+.brand span{color:var(--teal)}
+.domain{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted)}
+.top-links{display:flex;gap:8px;flex-wrap:wrap}
+.top-links a{font-size:13px;font-weight:700;text-decoration:none;color:var(--ink);border:1.5px solid var(--ink);padding:8px 14px;border-radius:999px;min-height:36px;display:inline-flex;align-items:center;background:var(--surface)}
+.top-links a:hover{background:var(--amber-bg)}
+
+/* hero */
+.hero{max-width:1120px;margin:0 auto;padding:36px 20px 8px}
+.hero h1{font-family:"Noto Serif SC",serif;font-size:clamp(32px,6vw,56px);line-height:1.05;margin:0 0 12px;font-weight:900}
+.hero h1 em{font-style:normal;color:var(--teal);box-shadow:inset 0 -0.35em var(--amber-bg)}
+.hero p{max-width:640px;color:var(--muted);font-size:16px;margin:0}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pill{font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px}
+
+/* layout */
+.wrap{max-width:1120px;margin:0 auto;padding:20px;display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start}
+@media(max-width:820px){.wrap{grid-template-columns:1fr;padding:14px}}
+nav.tools{position:sticky;top:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+@media(max-width:820px){nav.tools{position:static}}
+nav.tools h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:6px 8px 10px}
+.tool-btn{width:100%;text-align:left;background:transparent;border:0;border-radius:10px;padding:12px 12px;cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:700;font-size:15px;color:var(--ink)}
+.tool-btn small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.tool-btn:hover{background:var(--surface2)}
+.tool-btn.active{background:var(--ink);color:var(--surface)}
+.tool-btn.active small{color:inherit;opacity:.75}
+.tool-btn .ico{font-size:20px;flex:none}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;min-height:520px}
+@media(max-width:560px){.panel{padding:18px}}
+.panel{display:none}
+.panel.active{display:block}
+.panel h2{font-family:"Noto Serif SC",serif;font-size:26px;margin:0 0 6px;line-height:1.2}
+.panel .sub{color:var(--muted);margin:0 0 20px;font-size:14px}
+label{font-weight:700;font-size:14px;display:block;margin:14px 0 6px}
+textarea,input[type="text"],input[type="email"],input[type="tel"],select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg);color:var(--ink)}
+textarea{resize:vertical;min-height:150px}
+textarea:focus,input:focus,select:focus{outline:2px solid var(--teal);outline-offset:1px}
+.btn{border:0;border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer;background:var(--teal);color:#fff;min-height:44px}
+.btn.secondary{background:var(--surface2);color:var(--ink);border:1px solid var(--line)}
+.btn.dark{background:var(--ink);color:var(--surface)}
+.btn.amber{background:var(--amber);color:#fff}
+.btn:active{transform:scale(.98)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{font-size:26px;display:block;font-family:"JetBrains Mono",monospace}
+.stat span{font-size:12px;color:var(--muted);font-weight:700}
+
+/* flashcards */
+.flash-wrap{text-align:center}
+.flashcard{margin:18px auto;max-width:520px;height:260px;perspective:1000px;cursor:pointer}
+.flash-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flashcard.flipped .flash-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border:2px solid var(--ink)}
+.face.front{background:var(--amber-bg)}
+.face.back{background:var(--teal);color:#fff;transform:rotateY(180deg);border-color:var(--teal-dark)}
+.face .big{font-size:38px;font-weight:900;line-height:1.2}
+.face .pinyin{font-family:"JetBrains Mono",monospace;color:var(--muted);margin-top:8px}
+.face.back .pinyin{color:#ccfbf1}
+.face .ex{font-size:14px;margin-top:12px;opacity:.9;max-width:420px}
+.chip-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.chip{border:1.5px solid var(--ink);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;min-height:40px}
+.chip.active{background:var(--ink);color:var(--surface)}
+.progress{font-family:"JetBrains Mono",monospace;color:var(--muted);font-size:13px}
+
+/* resume */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+.resume-preview{background:#fff;color:#111;border:1px solid #ddd;border-radius:8px;padding:28px;font-size:14px;line-height:1.55;min-height:420px}
+@media(prefers-color-scheme:dark){.resume-preview{background:#fff;color:#111}}
+.resume-preview h3{font-size:24px;margin:0}
+.resume-preview .rtitle{color:#0f766e;font-weight:700}
+.resume-preview h4{border-bottom:2px solid #0f766e;padding-bottom:4px;margin:18px 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.resume-preview p{white-space:pre-wrap;margin:4px 0}
+
+/* pomodoro */
+.pomo{text-align:center}
+.ring-wrap{position:relative;width:220px;height:220px;margin:10px auto}
+.ring-wrap svg{transform:rotate(-90deg)}
+.time-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.time-display b{font-size:48px;font-family:"JetBrains Mono",monospace;line-height:1}
+.time-display span{color:var(--muted);font-weight:700;font-size:13px}
+
+/* password */
+.strength{height:10px;background:var(--surface2);border-radius:999px;overflow:hidden;margin-top:10px}
+.strength i{display:block;height:100%;width:0;background:var(--red);transition:width .3s}
+input[type="range"]{width:100%;accent-color:var(--teal)}
+.checkline{display:flex;gap:10px;align-items:center;padding:10px 0;font-weight:600}
+.checkline input{width:22px;height:22px;accent-color:var(--teal)}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--surface);padding:12px 20px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.learn{max-width:1120px;margin:0 auto;padding:6px 20px 10px}
+.learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:820px){.learn-grid{grid-template-columns:1fr}}
+.learn-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.learn-card h3{margin:0 0 8px;font-size:16px}
+.learn-card p{margin:0;color:var(--muted);font-size:14px}
+.ad-slot{max-width:1120px;margin:14px auto 0;padding:0 20px}
+.ad-box{border:1.5px dashed var(--line);border-radius:var(--radius);background:var(--surface);min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:18px;color:var(--muted)}
+.ad-box b{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.ad-box span{font-size:13px;max-width:560px}
+footer{max-width:1120px;margin:0 auto;padding:28px 20px 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar"><div class="topbar-in">
+  <div><div class="brand">FREE TOOLS <span>· 免费小工具</span></div><div class="domain">kevinlu.dpdns.org</div></div>
+  <div class="top-links"><a href="#tools">全部工具</a><a href="#learn">学习专栏</a></div>
+</div></header>
+
+<section class="hero">
+  <h1>打开就能用的<br><em>免费小工具</em></h1>
+  <p>字数统计、双语闪卡、简历整理、番茄钟、文本处理、密码生成 — 全部在浏览器里完成，不用注册，不用下载，手机和电脑都能用。</p>
+  <div class="hero-meta"><span class="pill">✓ 完全免费</span><span class="pill">✓ 无需注册</span><span class="pill">✓ 中英双语</span><span class="pill">✓ 24 小时在线</span></div>
+</section>
+
+<div class="wrap" id="tools">
+  <nav class="tools" aria-label="工具列表">
+    <h2>Tools · 工具箱</h2>
+    <button class="tool-btn active" data-panel="counter"><span class="ico">✍️</span><span>字数统计<small>Word Counter</small></span></button>
+    <button class="tool-btn" data-panel="flash"><span class="ico">🃏</span><span>双语闪卡<small>Flashcards</small></span></button>
+    <button class="tool-btn" data-panel="resume"><span class="ico">📄</span><span>简历整理<small>Resume Builder</small></span></button>
+    <button class="tool-btn" data-panel="pomo"><span class="ico">🍅</span><span>番茄钟<small>Pomodoro</small></span></button>
+    <button class="tool-btn" data-panel="texttool"><span class="ico">🔤</span><span>文本工具箱<small>Text Toolbox</small></span></button>
+    <button class="tool-btn" data-panel="password"><span class="ico">🔐</span><span>密码生成器<small>Password Generator</small></span></button>
+  </nav>
+
+  <main>
+    <!-- COUNTER -->
+    <section class="panel active" id="panel-counter">
+      <h2>字数统计</h2><p class="sub">写作文、写简历、发帖子之前先数一数。粘贴文字，实时统计中英文。</p>
+      <label for="counterInput">你的文字</label>
+      <textarea id="counterInput" placeholder="在这里输入或粘贴文字… 例如：Hello world，你好世界！"></textarea>
+      <div class="stats">
+        <div class="stat"><b id="sTotal">0</b><span>总字符（含空格）</span></div>
+        <div class="stat"><b id="sNoSpace">0</b><span>字符（不含空格）</span></div>
+        <div class="stat"><b id="sCn">0</b><span>中文字数</span></div>
+        <div class="stat"><b id="sEn">0</b><span>英文单词</span></div>
+        <div class="stat"><b id="sPara">0</b><span>段落</span></div>
+        <div class="stat"><b id="sSent">0</b><span>句子</span></div>
+        <div class="stat"><b id="sRead">0 分钟</b><span>阅读时长</span></div>
+        <div class="stat"><b id="sSpeak">0 分钟</b><span>朗读时长</span></div>
+      </div>
+      <div class="row" style="margin-top:16px"><button class="btn" id="copyCounter">复制文字</button><button class="btn secondary" id="clearCounter">清空</button></div>
+    </section>
+
+    <!-- FLASHCARDS -->
+    <section class="panel" id="panel-flash">
+      <h2>双语闪卡</h2><p class="sub">点卡片翻面看意思。每天翻一组，词汇量慢慢就上去了。</p>
+      <div class="chip-row" id="deckChips">
+        <button class="chip active" data-deck="daily">日常 Daily</button>
+        <button class="chip" data-deck="school">学校 School</button>
+        <button class="chip" data-deck="work">求职 Work</button>
+      </div>
+      <div class="flash-wrap">
+        <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="翻转闪卡"><div class="flash-inner">
+          <div class="face front"><div class="big" id="flashEn">—</div><div class="pinyin" id="flashPhon">—</div><div style="margin-top:14px;font-size:13px;color:var(--muted)">点击翻面 · Tap to flip</div></div>
+          <div class="face back"><div class="big" id="flashCn">—</div><div class="pinyin" id="flashPos">—</div><div class="ex" id="flashEx">—</div></div>
+        </div></div>
+        <div class="progress" id="flashProg">1 / 10</div>
+        <div class="row" style="justify-content:center;margin-top:14px">
+          <button class="btn secondary" id="flashPrev">← 上一张</button>
+          <button class="btn" id="flashShuffle">🔀 随机打乱</button>
+          <button class="btn secondary" id="flashNext">下一张 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUME -->
+    <section class="panel" id="panel-resume">
+      <h2>简历整理</h2><p class="sub">填左边，右边实时生成一份干净的简历。填完点「下载简历」保存成文件，拿去打印或发邮件。</p>
+      <div class="grid2">
+        <div>
+          <label>姓名 Name</label><input type="text" id="rName" placeholder="例如：Kevin Lu">
+          <label>求职岗位 Job Title</label><input type="text" id="rTitle" placeholder="例如：Translator / 翻译">
+          <label>邮箱 Email</label><input type="email" id="rEmail" placeholder="you@example.com">
+          <label>电话 Phone</label><input type="tel" id="rPhone" placeholder="306-xxx-xxxx">
+          <label>个人简介 Summary（一两句话说清你能做什么）</label><textarea id="rSummary" style="min-height:80px" placeholder="例如：中英双语，能把中文文章翻成自然地道的英文，也能帮小商家写英文邮件和文案。"></textarea>
+          <label>技能 Skills（用逗号隔开）</label><input type="text" id="rSkills" placeholder="中英翻译, 写作, Word, 客服沟通">
+          <label>经历 Experience（一段一行经历）</label><textarea id="rExp" style="min-height:100px" placeholder="2025 — 帮本地餐馆翻译菜单，中译英，3 天交付&#10;2024 — 学校校刊投稿并发表 2 篇文章"></textarea>
+          <label>教育 Education</label><input type="text" id="rEdu" placeholder="例如：Evan Hardy Collegiate, Saskatoon">
+          <div class="row" style="margin-top:16px"><button class="btn" id="downloadResume">⬇ 下载简历 (.txt)</button><button class="btn secondary" id="copyResume">复制全文</button></div>
+        </div>
+        <div><label>预览 Preview</label><div class="resume-preview" id="resumePreview"></div></div>
+      </div>
+    </section>
+
+    <!-- POMODORO -->
+    <section class="panel" id="panel-pomo">
+      <h2>番茄钟</h2><p class="sub">专注 25 分钟，休息 5 分钟。写作业、背单词、备考都好用，时间到会响一声。</p>
+      <div class="pomo">
+        <div class="chip-row"><button class="chip active" data-mode="focus">专注 25 分钟</button><button class="chip" data-mode="break">休息 5 分钟</button><button class="chip" data-mode="long">长专注 50 分钟</button></div>
+        <div class="ring-wrap">
+          <svg width="220" height="220" viewBox="0 0 220 220"><circle cx="110" cy="110" r="96" fill="none" stroke="var(--surface2)" stroke-width="12"/><circle id="ring" cx="110" cy="110" r="96" fill="none" stroke="var(--teal)" stroke-width="12" stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="0"/></svg>
+          <div class="time-display"><b id="pomoTime">25:00</b><span id="pomoLabel">准备开始</span></div>
+        </div>
+        <div class="row" style="justify-content:center"><button class="btn" id="pomoStart">▶ 开始</button><button class="btn secondary" id="pomoReset">↺ 重置</button></div>
+        <p class="progress" style="margin-top:14px">今天已完成番茄：<span id="pomoCount">0</span> 个</p>
+      </div>
+    </section>
+
+    <!-- TEXT TOOLBOX -->
+    <section class="panel" id="panel-texttool">
+      <h2>文本工具箱</h2><p class="sub">复制来的文字乱糟糟？一键整理干净。</p>
+      <label for="ttInput">输入文字</label><textarea id="ttInput" placeholder="把文字粘贴到这里…"></textarea>
+      <div class="row" style="margin-top:14px">
+        <button class="btn secondary" data-tt="upper">全大写 ABC</button>
+        <button class="btn secondary" data-tt="lower">全小写 abc</button>
+        <button class="btn secondary" data-tt="title">首字母大写</button>
+        <button class="btn secondary" data-tt="trim">去多余空格</button>
+        <button class="btn secondary" data-tt="dedupe">删除重复行</button>
+        <button class="btn secondary" data-tt="reverse">倒序排列</button>
+      </div>
+      <label for="ttOutput">结果</label><textarea id="ttOutput" readonly placeholder="处理结果会出现在这里"></textarea>
+      <div class="row" style="margin-top:12px"><button class="btn" id="copyTT">复制结果</button></div>
+    </section>
+
+    <!-- PASSWORD -->
+    <section class="panel" id="panel-password">
+      <h2>密码生成器</h2><p class="sub">生成一个连你自己都记不住的强密码 — 这才安全。生成后请存进密码管理器，不要写在纸上到处贴。</p>
+      <label>生成的密码</label>
+      <div class="row"><input type="text" id="pwdOut" readonly class="mono" style="flex:1;font-size:18px"><button class="btn" id="copyPwd">复制</button><button class="btn dark" id="genPwd">🎲 重新生成</button></div>
+      <div class="strength"><i id="strengthBar"></i></div><p class="progress" id="strengthText">强度：—</p>
+      <label>长度：<span id="pwdLenLabel">16</span> 位</label>
+      <input type="range" id="pwdLen" min="8" max="32" value="16">
+      <label class="checkline"><input type="checkbox" id="optUpper" checked> 包含大写字母 A–Z</label>
+      <label class="checkline"><input type="checkbox" id="optLower" checked> 包含小写字母 a–z</label>
+      <label class="checkline"><input type="checkbox" id="optNum" checked> 包含数字 0–9</label>
+      <label class="checkline"><input type="checkbox" id="optSym" checked> 包含符号 !@#$%</label>
+    </section>
+  </main>
+</div>
+
+<!-- Google AdSense: 广告位已预留。AdSense 账号审核通过后，把 Google 给的广告代码粘贴到下面的 .ad-box 里即可显示广告并产生收入。目前尚未接入真实广告代码，所以这里只显示占位说明，不产生收入。 -->
+<div class="ad-slot" aria-label="广告位"><div class="ad-box"><b>Advertisement · 广告</b><span>广告位（Google AdSense）— 账号审核通过、广告代码接入后，这里会显示广告。访客浏览即可为本站带来广告收入，用于维持网站免费运行。</span></div></div>
+
+<section class="learn" id="learn">
+  <div class="learn-grid">
+    <article class="learn-card"><h3>📚 背单词小窍门</h3><p>别一次背 100 个。每天用闪卡翻 10 个，第二天先复习昨天的再学新的 — 这叫间隔重复，是记忆研究里最有效的方法之一。</p></article>
+    <article class="learn-card"><h3>📝 简历只写一页</h3><p>招聘的人平均只看一份简历 7 秒。把最相关的经历放最前面，用「做了什么 + 结果」写每一行，比如「翻译菜单 40 道菜，3 天交付」。</p></article>
+    <article class="learn-card"><h3>🔐 密码别重复用</h3><p>同一个密码用在所有网站，等于一把钥匙开所有的锁。每个重要账号用不同的长密码，再开两步验证，安全性立刻上一个档次。</p></article>
+  </div>
+</section>
+
+<footer><span>© 2026 Kevin Lu · Free Tools</span><span class="mono">kevinlu.dpdns.org</span></footer>
+<div class="toast" id="toast">已复制 ✓</div>
+
+<script>
+// ---------- nav ----------
+var btns=document.querySelectorAll('.tool-btn'), panels=document.querySelectorAll('.panel');
+btns.forEach(function(b){b.addEventListener('click',function(){
+  btns.forEach(function(x){x.classList.remove('active')}); b.classList.add('active');
+  panels.forEach(function(p){p.classList.remove('active')});
+  document.getElementById('panel-'+b.dataset.panel).classList.add('active');
+  document.getElementById('tools').scrollIntoView({behavior:'smooth',block:'start'});
+})});
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+function copyText(txt,msg){ if(!txt){toast('没有可复制的内容');return}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast(msg||'已复制 ✓')},function(){fallbackCopy(txt,msg)})}else{fallbackCopy(txt,msg)} }
+function fallbackCopy(txt,msg){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'已复制 ✓')}catch(e){toast('复制失败，请长按手动复制')}document.body.removeChild(ta)}
+
+// ---------- word counter ----------
+var ci=document.getElementById('counterInput');
+function fmtMin(sec){ if(sec<60) return Math.max(1,Math.round(sec))+' 秒'; return (sec/60).toFixed(1).replace(/\.0$/,'')+' 分钟' }
+function updateCounter(){var t=ci.value;
+  var cn=(t.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g)||[]).length;
+  var en=(t.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length;
+  var noSpace=t.replace(/\s/g,'').length;
+  var para=t.trim()?t.trim().split(/\n\s*\n|\n/).filter(function(s){return s.trim()}).length:0;
+  var sent=t.trim()?(t.match(/[。！？.!?]+/g)||[]).length:0;
+  document.getElementById('sTotal').textContent=t.length;
+  document.getElementById('sNoSpace').textContent=noSpace;
+  document.getElementById('sCn').textContent=cn;
+  document.getElementById('sEn').textContent=en;
+  document.getElementById('sPara').textContent=para;
+  document.getElementById('sSent').textContent=Math.max(sent, t.trim()?1:0);
+  var readSec=cn/400*60+en/200*60, speakSec=cn/300*60+en/150*60;
+  document.getElementById('sRead').textContent=t.trim()?fmtMin(readSec):'0 分钟';
+  document.getElementById('sSpeak').textContent=t.trim()?fmtMin(speakSec):'0 分钟';
+}
+ci.addEventListener('input',updateCounter); updateCounter();
+document.getElementById('copyCounter').addEventListener('click',function(){copyText(ci.value)});
+document.getElementById('clearCounter').addEventListener('click',function(){ci.value='';updateCounter();ci.focus()});
+
+// ---------- flashcards ----------
+var DECKS={
+ daily:[["breakfast","/ˈbrekfəst/","n. 名词","早餐","I have eggs for breakfast.","我早餐吃鸡蛋。"],["appointment","/əˈpɔɪntmənt/","n. 名词","预约；约会","I have a doctor's appointment at 3.","我 3 点有个看医生的预约。"],["groceries","/ˈɡroʊsəriz/","n. 名词","食品杂货","We buy groceries every Sunday.","我们每周日买菜。"],["weather","/ˈweðər/","n. 名词","天气","The weather is cold today.","今天天气很冷。"],["borrow","/ˈbɑːroʊ/","v. 动词","借入","Can I borrow your pen?","我能借你的笔吗？"],["return","/rɪˈtɜːrn/","v. 动词","归还；返回","Please return the book tomorrow.","请明天把书还回来。"],["delicious","/dɪˈlɪʃəs/","adj. 形容词","美味的","This soup is delicious.","这汤真好喝。"],["expensive","/ɪkˈspensɪv/","adj. 形容词","昂贵的","That jacket is too expensive.","那件夹克太贵了。"],["neighborhood","/ˈneɪbərhʊd/","n. 名词","社区；街区","Our neighborhood is quiet.","我们社区很安静。"],["umbrella","/ʌmˈbrelə/","n. 名词","雨伞","Take an umbrella, it may rain.","带把伞，可能会下雨。"]],
+ school:[["homework","/ˈhoʊmwɜːrk/","n. 名词","家庭作业","I finished my homework.","我写完作业了。"],["essay","/ˈeseɪ/","n. 名词","作文；论文","Write a 500-word essay.","写一篇 500 词的作文。"],["deadline","/ˈdedlaɪn/","n. 名词","截止日期","The deadline is Monday.","截止日期是周一。"],["library","/ˈlaɪbreri/","n. 名词","图书馆","She studies in the library.","她在图书馆学习。"],["exam","/ɪɡˈzæm/","n. 名词","考试","We have a math exam tomorrow.","明天有数学考试。"],["grade","/ɡreɪd/","n. 名词","成绩；年级","He got a good grade.","他考了个好成绩。"],["subject","/ˈsʌbdʒɪkt/","n. 名词","科目","English is my favourite subject.","英语是我最喜欢的科目。"],["question","/ˈkwestʃən/","n. 名词","问题","Raise your hand to ask a question.","举手提问。"],["answer","/ˈænsər/","n./v.","答案；回答","Do you know the answer?","你知道答案吗？"],["practice","/ˈpræktɪs/","v./n.","练习","Practice makes perfect.","熟能生巧。"]],
+ work:[["resume","/ˈrezəmeɪ/","n. 名词","简历","Send me your resume by email.","把你的简历发邮件给我。"],["interview","/ˈɪntərvjuː/","n. 名词","面试","I have a job interview on Friday.","我周五有个面试。"],["experience","/ɪkˈspɪriəns/","n. 名词","经验；经历","Experience matters more than grades.","经验比成绩更重要。"],["customer","/ˈkʌstəmər/","n. 名词","顾客；客户","The customer is happy with the work.","客户对成果很满意。"],["deadline","/ˈdedlaɪn/","n. 名词","交付期限","We delivered two days before the deadline.","我们提前两天交付。"],["translate","/trænzˈleɪt/","v. 动词","翻译","I translate menus for local restaurants.","我给本地餐馆翻译菜单。"],["professional","/prəˈfeʃənl/","adj. 形容词","专业的","She is very professional.","她非常专业。"],["project","/ˈprɑːdʒekt/","n. 名词","项目","This project took three weeks.","这个项目花了三周。"],["payment","/ˈpeɪmənt/","n. 名词","付款","Payment is due on Friday.","周五付款。"],["skill","/skɪl/","n. 名词","技能","Writing is a valuable skill.","写作是一项有价值的技能。"]]
+};
+var curDeck='daily', curList=DECKS.daily.slice(), curIdx=0;
+var fc=document.getElementById('flashcard');
+function renderCard(){var c=curList[curIdx];fc.classList.remove('flipped');
+  document.getElementById('flashEn').textContent=c[0];document.getElementById('flashPhon').textContent=c[1];
+  document.getElementById('flashCn').textContent=c[3];document.getElementById('flashPos').textContent=c[2]+' · '+c[0]+' '+c[1];
+  document.getElementById('flashEx').textContent=c[4]+' '+c[5];
+  document.getElementById('flashProg').textContent=(curIdx+1)+' / '+curList.length+' · '+curDeck.toUpperCase();}
+fc.addEventListener('click',function(){fc.classList.toggle('flipped')});
+fc.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fc.classList.toggle('flipped')}});
+document.getElementById('flashNext').addEventListener('click',function(){curIdx=(curIdx+1)%curList.length;renderCard()});
+document.getElementById('flashPrev').addEventListener('click',function(){curIdx=(curIdx-1+curList.length)%curList.length;renderCard()});
+document.getElementById('flashShuffle').addEventListener('click',function(){for(var i=curList.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=curList[i];curList[i]=curList[j];curList[j]=tmp}curIdx=0;renderCard();toast('已打乱顺序 🔀')});
+document.querySelectorAll('#deckChips .chip').forEach(function(ch){ch.addEventListener('click',function(){
+  document.querySelectorAll('#deckChips .chip').forEach(function(x){x.classList.remove('active')});ch.classList.add('active');
+  curDeck=ch.dataset.deck;curList=DECKS[curDeck].slice();curIdx=0;renderCard();})});
+renderCard();
+
+// ---------- resume ----------
+var rIds=['rName','rTitle','rEmail','rPhone','rSummary','rSkills','rExp','rEdu'];
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function val(id){return document.getElementById(id).value.trim()}
+function renderResume(){
+  var name=val('rName')||'你的名字', title=val('rTitle'), contact=[val('rEmail'),val('rPhone')].filter(Boolean).join(' · ');
+  var html='<h3>'+esc(name)+'</h3>'+(title?'<div class="rtitle">'+esc(title)+'</div>':'')+(contact?'<p>'+esc(contact)+'</p>':'');
+  if(val('rSummary'))html+='<h4>个人简介 Summary</h4><p>'+esc(val('rSummary'))+'</p>';
+  if(val('rSkills'))html+='<h4>技能 Skills</h4><p>'+esc(val('rSkills').split(/[,，、]/).map(function(s){return s.trim()}).filter(Boolean).join(' · '))+'</p>';
+  if(val('rExp'))html+='<h4>经历 Experience</h4><p>'+esc(val('rExp'))+'</p>';
+  if(val('rEdu'))html+='<h4>教育 Education</h4><p>'+esc(val('rEdu'))+'</p>';
+  document.getElementById('resumePreview').innerHTML=html;
+}
+rIds.forEach(function(id){document.getElementById(id).addEventListener('input',renderResume)}); renderResume();
+function resumeText(){var lines=[val('rName')||'你的名字']; if(val('rTitle'))lines.push(val('rTitle'));
+  var c=[val('rEmail'),val('rPhone')].filter(Boolean).join(' | '); if(c)lines.push(c);
+  if(val('rSummary'))lines.push('','== 个人简介 ==',val('rSummary'));
+  if(val('rSkills'))lines.push('','== 技能 ==',val('rSkills'));
+  if(val('rExp'))lines.push('','== 经历 ==',val('rExp'));
+  if(val('rEdu'))lines.push('','== 教育 ==',val('rEdu'));
+  return lines.join('\n');}
+document.getElementById('copyResume').addEventListener('click',function(){copyText(resumeText(),'简历已复制 ✓')});
+document.getElementById('downloadResume').addEventListener('click',function(){
+  var blob=new Blob([resumeText()],{type:'text/plain;charset=utf-8'});var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='resume.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url)},2000); toast('简历已下载 ✓');});
+
+// ---------- pomodoro ----------
+var MODES={focus:25*60,break:5*60,long:50*60}, pomoTotal=MODES.focus, pomoLeft=pomoTotal, pomoTimer=null, pomoDone=0, pomoMode='focus';
+var ring=document.getElementById('ring'), CIRC=603;
+function renderPomo(){var m=Math.floor(pomoLeft/60),s=pomoLeft%60;
+  document.getElementById('pomoTime').textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  ring.style.strokeDashoffset=String(CIRC*(1-pomoLeft/pomoTotal));
+  ring.style.stroke=pomoMode==='break'?'var(--amber)':'var(--teal)';}
+function beep(){try{var Ctx=window.AudioContext||window.webkitAudioContext;var ctx=new Ctx();var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;g.gain.setValueAtTime(.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+1.2);o.start();o.stop(ctx.currentTime+1.2);}catch(e){}}
+function stopPomo(label){clearInterval(pomoTimer);pomoTimer=null;document.getElementById('pomoStart').textContent='▶ 开始';if(label)document.getElementById('pomoLabel').textContent=label;}
+document.getElementById('pomoStart').addEventListener('click',function(){
+  if(pomoTimer){stopPomo('已暂停');return}
+  document.getElementById('pomoLabel').textContent=pomoMode==='break'?'休息中…':'专注中…';
+  this.textContent='⏸ 暂停';
+  pomoTimer=setInterval(function(){pomoLeft--;renderPomo();
+    if(pomoLeft<=0){stopPomo('时间到！🎉');beep();toast('时间到！🎉');
+      if(pomoMode!=='break'){pomoDone++;document.getElementById('pomoCount').textContent=pomoDone;}
+      pomoLeft=pomoTotal;renderPomo();}},1000);});
+document.getElementById('pomoReset').addEventListener('click',function(){stopPomo('准备开始');pomoLeft=pomoTotal;renderPomo()});
+document.querySelectorAll('[data-mode]').forEach(function(ch){ch.addEventListener('click',function(){
+  document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.remove('active')});ch.classList.add('active');
+  pomoMode=ch.dataset.mode;pomoTotal=MODES[pomoMode];stopPomo('准备开始');pomoLeft=pomoTotal;renderPomo();})});
+renderPomo();
+
+// ---------- text toolbox ----------
+document.querySelectorAll('[data-tt]').forEach(function(b){b.addEventListener('click',function(){
+  var t=document.getElementById('ttInput').value, out=t, op=b.dataset.tt;
+  if(op==='upper')out=t.toUpperCase();
+  if(op==='lower')out=t.toLowerCase();
+  if(op==='title')out=t.toLowerCase().replace(/(^|\s|[.!?]\s+)([a-z])/g,function(m,p,c){return p+c.toUpperCase()});
+  if(op==='trim')out=t.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+  if(op==='dedupe'){var seen={},lines=[];t.split('\n').forEach(function(l){if(!seen[l]){seen[l]=1;lines.push(l)}});out=lines.join('\n')}
+  if(op==='reverse')out=t.split('\n').reverse().join('\n');
+  document.getElementById('ttOutput').value=out; toast('处理完成 ✓');})});
+document.getElementById('copyTT').addEventListener('click',function(){copyText(document.getElementById('ttOutput').value)});
+
+// ---------- password ----------
+function genPassword(){var sets='';
+  if(document.getElementById('optUpper').checked)sets+='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  if(document.getElementById('optLower').checked)sets+='abcdefghijkmnpqrstuvwxyz';
+  if(document.getElementById('optNum').checked)sets+='23456789';
+  if(document.getElementById('optSym').checked)sets+='!@#$%^&*()-_=+';
+  if(!sets){toast('至少勾选一种字符');return}
+  var len=parseInt(document.getElementById('pwdLen').value,10), arr=new Uint32Array(len);
+  if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(arr);else for(var i=0;i<len;i++)arr[i]=Math.floor(Math.random()*4294967296);
+  var pwd='';for(var k=0;k<len;k++)pwd+=sets[arr[k]%sets.length];
+  document.getElementById('pwdOut').value=pwd;
+  var score=0; if(len>=12)score++; if(len>=16)score++; if(/[A-Z]/.test(pwd)&&/[a-z]/.test(pwd))score++; if(/[0-9]/.test(pwd))score++; if(/[^A-Za-z0-9]/.test(pwd))score++;
+  var pct=Math.min(100,score*20), bar=document.getElementById('strengthBar');
+  bar.style.width=pct+'%'; bar.style.background=score<=2?'var(--red)':score<=3?'var(--amber)':'var(--teal)';
+  document.getElementById('strengthText').textContent='强度：'+(score<=2?'弱 — 再长一点更安全':score<=3?'中等 — 还不错':'强 — 很好 ✓')+'（'+len+' 位）';}
+document.getElementById('genPwd').addEventListener('click',genPassword);
+document.getElementById('pwdLen').addEventListener('input',function(){document.getElementById('pwdLenLabel').textContent=this.value;genPassword()});
+['optUpper','optLower','optNum','optSym'].forEach(function(id){document.getElementById(id).addEventListener('change',genPassword)});
+document.getElementById('copyPwd').addEventListener('click',function(){copyText(document.getElementById('pwdOut').value,'密码已复制 ✓')});
+genPassword();
+</script>
+</body>
+</html>
